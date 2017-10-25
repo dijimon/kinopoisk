@@ -38,11 +38,12 @@ export default class Main extends Component {
     }
 
     render () {
-        const popMovies = this.state.popMovies.map((movie, index) => {
-            <Movie
-                posterPath = { `https://image.tmdb.org/t/p/w300/${movie.poster_path}.jpg` }
-            />;
-        });
+        const popMovies = this.state.popMovies.map((movie, index) =>
+            (<Movie
+                posterPath = { `https://image.tmdb.org/t/p/w130/${movie.poster_path}` }
+                movie = { movie }
+            />)
+        );
 
 
         return (
