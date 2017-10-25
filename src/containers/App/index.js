@@ -11,6 +11,6 @@ export default class App extends Component {
     timer = setInterval(() => this.forceUpdate(), 1000);
 
     render () {
-        return <Home />
+        return <Home />;
     }
 }

@@ -4,10 +4,10 @@ import Style from './styles.scss';
 export default class Header extends Component {
     render () {
         return (
-            <section className = {Style.header}>
+            <section className = { Style.header }>
                 <h1>Кинопоиск</h1>
-                <a href="#">Популярные</a>
+                <a href = '#'>Популярные</a>
             </section>
-        )
+        );
     }
 }

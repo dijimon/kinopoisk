@@ -7,6 +7,6 @@ export default class Footer extends Component {
             <section className = { Style.footer }>
                 <h1>Footer</h1>
             </section>
-        )
+        );
     }
 }
