@@ -1,24 +1,42 @@
 import React, { Component } from 'react';
-import Style from './styles.scss';
-import { CSSTransition, Transition, TransitionGroup } from 'react-transition-group';
+import Styles from './styles.scss';
 import Movie from '../Movie';
 
+import { PropTypes } from 'prop-types';
+
 export default class Main extends Component {
-    constructor () {
+    static contextTypes = {
+        baseUrl:  PropTypes.string.isRequired,
+        apiKey:   PropTypes.string.isRequired,
+        language: PropTypes.string.isRequired
+    }
+
+    constructor (props) {
         super();
 
         this.getPopularMovies = this._getPopularMovies.bind(this);
         this.state = {
-            popMovies: []
+            popMovies: [],
+            genres: {},
+            filter: props.filter
         };
     }
 
     componentWillMount () {
+
+    }
+
+    componentWillReceiveProps (props) {
+        this.setState(() => ({
+            filter: props.filter
+        }));
         this.getPopularMovies();
     }
 
     _getPopularMovies () {
-        fetch('https://api.themoviedb.org/3/movie/popular?api_key=9a8d59d5385222ef85c69dd5bc16c15c&language=ru-RU&page=1&region=UA',
+        const { baseUrl, apiKey, language } = this.context;
+
+        fetch(`${baseUrl}/movie/${this.state.filter}?api_key=${apiKey}&language=${language}&page=1&region=UA`,
             {
                 method:  'GET',
                 headers: {
@@ -38,18 +56,26 @@ export default class Main extends Component {
     }
 
     render () {
+        const { genres } = this.props;
+
         const popMovies = this.state.popMovies.map((movie, index) =>
             (<Movie
-                posterPath = { `https://image.tmdb.org/t/p/w130/${movie.poster_path}` }
+                key = { index }
+                posterPath = { `https://image.tmdb.org/t/p/w150/${movie.poster_path}` }
                 movie = { movie }
-            />)
+                genres = { genres }
+                />)
         );
 
 
         return (
-            <section className = { Style.main }>
-                { popMovies }
+            <section className = { Styles.extCont }>
+                <section className = { Styles.wishList } />
+                <section className = { Styles.mainList }>
+                    { popMovies }
+                </section>
             </section>
+
         );
     }
 }
