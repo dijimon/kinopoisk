@@ -4,10 +4,6 @@ import Movie from '../Movie';
 import MainTabs from '../MainTabs';
 
 import { PropTypes } from 'prop-types';
-let start;
-let end;
-let e1;
-let e2;
 
 export default class Main extends Component {
     static contextTypes = {
@@ -27,25 +23,12 @@ export default class Main extends Component {
         };
     }
 
-    componentWillMount () {
-        start = Date.now();
-        console.log('componentWillMount');
-        console.log(start);
-        console.time('renderingTime');
-    }
-
-    componentDidMount () {
-        end = Date.now();
-        console.log('componentDidMount');
-        console.log(end);
-        console.log(end - start);
-        console.timeEnd('renderingTime');
-    }
-
     componentWillReceiveProps (props) {
         this.setState(() => ({
             filter: props.filter
         }));
+
+        this.getMovies();
     }
 
     _getMovies () {
@@ -64,11 +47,6 @@ export default class Main extends Component {
 
             return results.json();
         }).then(({ results }) => {
-            const e1 = Date.now();
-
-            console.log('then1');
-            console.log(e1);
-            console.log(e1 - end);
             this.setState(({ popMovies }) => ({
                 movies: results
             }));
@@ -82,8 +60,6 @@ export default class Main extends Component {
     render () {
         const { genres, switchFilter } = this.props;
         const { filter } = this.state;
-
-        this.getMovies();
 
         let movies = this.state.movies.map((movie, index) =>
             (<section onClick = { (event) => this._handleClick(event, movie) }>

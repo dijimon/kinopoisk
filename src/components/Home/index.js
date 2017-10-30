@@ -62,7 +62,6 @@ export default class Home extends Component {
                 flatGenres[genre.id] = genre.name;
             });
 
-            console.log(flatGenres);
             this.setState(() => ({
                 genres: flatGenres
             }));
@@ -72,7 +71,6 @@ export default class Home extends Component {
     }
 
     _switchFilter (category) {
-        console.log('+++'+category);
         this.setState(() => ({
             filter: category
         }));
