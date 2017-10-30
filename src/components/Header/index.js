@@ -1,24 +1,30 @@
 import React, { Component } from 'react';
-import Style from './styles.scss';
+import Styles from './styles.scss';
 
 export default class Header extends Component {
     constructor () {
         super();
     }
 
-    handleClick (param, event) {
-        event.preventDefault();
-
-        this.props.switchFilter(param);
-    }
-
     render () {
         const { filter } = this.props;
 
         return (
-            <section className = { Style.header }>
-                <a onClick = { this.handleClick.bind(this, 'popular') } href = '#'>Смотреть позже</a>
-                <a onClick = { this.handleClick.bind(this, 'top_rated') } href = '#'>Любимые</a>
+            <section className = { Styles.header }>
+                <a href = '#'>Смотреть позже</a>
+                <a href = '#'>Любимые</a>
+                <form onSubmit = { this.handleSubmit }>
+                    <input
+                            placeholder = 'Search for movies...'
+                            size = '45'
+                            type = 'text'
+                            onChange = { this.handleInputChange }
+                    />
+                    <input
+                            type = 'submit'
+                    />
+                    <span className = { Styles.search }> </span>
+                </form>
             </section>
         );
     }

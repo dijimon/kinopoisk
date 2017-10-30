@@ -32,8 +32,6 @@ export default class Main extends Component {
         console.log('componentWillMount');
         console.log(start);
         console.time('renderingTime');
-
-        this.getMovies();
     }
 
     componentDidMount () {
@@ -84,6 +82,8 @@ export default class Main extends Component {
     render () {
         const { genres, switchFilter } = this.props;
         const { filter } = this.state;
+
+        this.getMovies();
 
         let movies = this.state.movies.map((movie, index) =>
             (<section onClick = { (event) => this._handleClick(event, movie) }>
