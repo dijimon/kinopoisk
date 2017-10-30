@@ -1,8 +1,32 @@
 .header {
   display: flex;
-  flex-direction: column;
-  background-color: #cccccc;
-  padding: 20px;
+  width: 100vw;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  background-color: #fefefe;
+  padding: 0;
+  margin-bottom: 10px;
+  box-shadow: 3px 3px 3px #bbb;
+  z-index: 100;
+}
+
+.header a:last-child {
+  border-right: 1px solid #dddddd;
+}
+
+.header a {
+  text-align: center;
+  padding: 11px;
+  min-width: 100px;
+  text-decoration: none;
+  color: #555555;
+  border-left: 1px solid #dddddd;
+}
+
+.header a:hover {
+  background-color: #dddddd;
 }
 
 h1 {

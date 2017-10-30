@@ -5,6 +5,7 @@ import Main from '../Main';
 import Footer from '../Footer';
 
 import { PropTypes } from 'prop-types';
+import DetailsPopUp from '../DetailsPopUp/index';
 
 export const config = {
     baseUrl:  'https://api.themoviedb.org/3',
@@ -23,12 +24,16 @@ export default class Home extends Component {
         super();
 
         this.state = {
-            genres: {},
-            filter: ['popular']
+            genres:           {},
+            filter:           'popular',
+            movie:            {},
+            showDetailsPopUp: false
         };
 
         this.getGenreList = this._getGenreList.bind(this);
         this.switchFilter = this._switchFilter.bind(this);
+        this.showDetailsPopUp = this._showDetailsPopUp.bind(this);
+        this.hideDetailsPopUp = this._hideDetailsPopUp.bind(this);
     }
 
     componentWillMount () {
@@ -66,19 +71,35 @@ export default class Home extends Component {
         });
     }
 
-    _switchFilter (selector) {
-        console.log(selector);
+    _switchFilter (category) {
+        console.log('+++'+category);
         this.setState(() => ({
-            filter: [selector]
+            filter: category
+        }));
+    }
+
+    _showDetailsPopUp (movie) {
+        this.setState((prevState) => ({
+            movie,
+            showDetailsPopUp: true
+        }));
+    }
+
+    _hideDetailsPopUp () {
+        this.setState((prevState) => ({
+            showDetailsPopUp: false
         }));
     }
 
     render () {
-        const { genres, filter } = this.state;
+        const { genres, filter, showDetailsPopUp, movie } = this.state;
+
+
         return (
             <section className = { Styles.home }>
-                <Header filter = {filter} switchFilter = { this.switchFilter } />
-                <Main filter = {filter[0]} genres = { genres } />
+                <DetailsPopUp genres = { genres } hidePopUp = { this.hideDetailsPopUp } show = { showDetailsPopUp } movie = { movie } />
+                <Header />
+                <Main switchFilter = { this.switchFilter } filter = { filter } genres = { genres } showDetailsPopUp = { this.showDetailsPopUp } />
                 <Footer />
             </section>
         );

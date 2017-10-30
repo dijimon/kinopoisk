@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import Styles from './styles.scss';
 import Movie from '../Movie';
+import MainTabs from '../MainTabs';
 
 import { PropTypes } from 'prop-types';
+let start;
+let end;
+let e1;
+let e2;
 
 export default class Main extends Component {
     static contextTypes = {
@@ -14,26 +19,38 @@ export default class Main extends Component {
     constructor (props) {
         super();
 
-        this.getPopularMovies = this._getPopularMovies.bind(this);
+        this.getMovies = this._getMovies.bind(this);
         this.state = {
-            popMovies: [],
+            movies: [],
             genres: {},
             filter: props.filter
         };
     }
 
     componentWillMount () {
+        start = Date.now();
+        console.log('componentWillMount');
+        console.log(start);
+        console.time('renderingTime');
 
+        this.getMovies();
+    }
+
+    componentDidMount () {
+        end = Date.now();
+        console.log('componentDidMount');
+        console.log(end);
+        console.log(end - start);
+        console.timeEnd('renderingTime');
     }
 
     componentWillReceiveProps (props) {
         this.setState(() => ({
             filter: props.filter
         }));
-        this.getPopularMovies();
     }
 
-    _getPopularMovies () {
+    _getMovies () {
         const { baseUrl, apiKey, language } = this.context;
 
         fetch(`${baseUrl}/movie/${this.state.filter}?api_key=${apiKey}&language=${language}&page=1&region=UA`,
@@ -49,30 +66,41 @@ export default class Main extends Component {
 
             return results.json();
         }).then(({ results }) => {
+            const e1 = Date.now();
+
+            console.log('then1');
+            console.log(e1);
+            console.log(e1 - end);
             this.setState(({ popMovies }) => ({
-                popMovies: results
+                movies: results
             }));
         });
     }
 
-    render () {
-        const { genres } = this.props;
+    _handleClick (event, movie) {
+        this.props.showDetailsPopUp(movie);
+    }
 
-        const popMovies = this.state.popMovies.map((movie, index) =>
-            (<Movie
-                key = { index }
-                posterPath = { `https://image.tmdb.org/t/p/w150/${movie.poster_path}` }
-                movie = { movie }
-                genres = { genres }
-                />)
+    render () {
+        const { genres, switchFilter } = this.props;
+        const { filter } = this.state;
+
+        let movies = this.state.movies.map((movie, index) =>
+            (<section onClick = { (event) => this._handleClick(event, movie) }>
+                <Movie
+                    posterPath = { `https://image.tmdb.org/t/p/w160/${movie.poster_path}` }
+                    movie = { movie }
+                    genres = { genres }
+                />
+            </section>)
         );
 
 
         return (
             <section className = { Styles.extCont }>
-                <section className = { Styles.wishList } />
+                <MainTabs filter = { filter } switchFilter = { switchFilter } />
                 <section className = { Styles.mainList }>
-                    { popMovies }
+                    { movies }
                 </section>
             </section>
 

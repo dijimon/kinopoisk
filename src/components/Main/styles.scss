@@ -1,21 +1,16 @@
 .mainList {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   width: 80vw;
-  background-color: #eee;
+  background-color: #fefefe;
   padding: 20px;
-  border: 1px solid blue;
-}
-
-.wishList {
-  display: flex;
-  width: 20vw;
-  border: 1px solid green;
 }
 
 .extCont {
   display: flex;
-  width: 100vw;
+  flex-direction: column;
+  align-items: center;
   justify-content: flex-end;
-  border: 1px solid red;
+  width: 100vw;
 }

@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 80vw;
+  margin-top: 50px;
+}
+
+.container a {
+  text-align: center;
+  min-width: 80px;
+  padding: 10px;
+  margin-right: 2px;
+  background-color: #fefefe;
+  color: #555555;
+}
+
+a.active {
+  background-color: #eeeeee;
+}
