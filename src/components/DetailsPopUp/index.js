@@ -15,8 +15,10 @@ export default class DetailsPopUp extends Component {
     render () {
         const { show, movie, genres } = this.props;
         let genreNames = '';
+
         if (show) {
             const genreNamesArr = movie.genre_ids.map((g) => genres[g]);
+
             genreNames = genreNamesArr.join(', ');
         }
 

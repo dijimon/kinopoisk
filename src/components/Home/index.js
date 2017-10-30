@@ -34,10 +34,12 @@ export default class Home extends Component {
         this.switchFilter = this._switchFilter.bind(this);
         this.showDetailsPopUp = this._showDetailsPopUp.bind(this);
         this.hideDetailsPopUp = this._hideDetailsPopUp.bind(this);
+        this.getMovies = this._getMovies.bind(this);
     }
 
     componentWillMount () {
         this.getGenreList();
+        this.getMovies(this.state.filter);
     }
 
     getChildContext () {
@@ -71,9 +73,10 @@ export default class Home extends Component {
     }
 
     _switchFilter (category) {
-        this.setState(() => ({
+        this.getMovies(category);
+        this.setState({
             filter: category
-        }));
+        });
     }
 
     _showDetailsPopUp (movie) {
@@ -89,6 +92,30 @@ export default class Home extends Component {
         }));
     }
 
+    _getMovies (filter) {
+        const { baseUrl, apiKey, language } = this.context;
+
+        fetch(`${baseUrl}/movie/${filter}?api_key=${apiKey}&language=${language}&page=1&region=UA`,
+            {
+                method:  'GET',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                }
+            }).then((results) => {
+            if (results.status !== 200) {
+                throw new Error('Films were not received.');
+            }
+
+            return results.json();
+        }).then(({ results }) => {
+            this.setState(() => ({
+                movies: results
+            }));
+
+            this.forceUpdate();
+        });
+    }
+
     render () {
         const { genres, filter, showDetailsPopUp, movie } = this.state;
 
@@ -97,7 +124,7 @@ export default class Home extends Component {
             <section className = { Styles.home }>
                 <DetailsPopUp genres = { genres } hidePopUp = { this.hideDetailsPopUp } show = { showDetailsPopUp } movie = { movie } />
                 <Header />
-                <Main switchFilter = { this.switchFilter } filter = { filter } genres = { genres } showDetailsPopUp = { this.showDetailsPopUp } />
+                <Main getMovies = { this.getMovies } switchFilter = { this.switchFilter } filter = { filter } genres = { genres } showDetailsPopUp = { this.showDetailsPopUp } />
                 <Footer />
             </section>
         );

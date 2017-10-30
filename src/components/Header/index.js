@@ -15,15 +15,15 @@ export default class Header extends Component {
                 <a href = '#'>Любимые</a>
                 <form onSubmit = { this.handleSubmit }>
                     <input
-                            placeholder = 'Search for movies...'
-                            size = '45'
-                            type = 'text'
-                            onChange = { this.handleInputChange }
+                        placeholder = 'Search for movies...'
+                        size = '45'
+                        type = 'text'
+                        onChange = { this.handleInputChange }
                     />
                     <input
-                            type = 'submit'
+                        type = 'submit'
                     />
-                    <span className = { Styles.search }> </span>
+                    <span className = { Styles.search } />
                 </form>
             </section>
         );

@@ -11,7 +11,7 @@ export default class Movie extends Component {
             <section className = { Styles.movieItem }>
                 <div className = { Styles.imgCont }>
                     <img src = { posterPath } />
-                    <div className={Styles.transparentEl}></div>
+                    <div className = { Styles.transparentEl } />
                 </div>
                 <span className = { Styles.title }>{ movie.title }</span>
                 <span className = { Styles.year }>{`Год: ${movie.release_date.substring(0, 4)}`}</span>

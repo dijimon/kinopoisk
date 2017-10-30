@@ -15,54 +15,27 @@ export default class Main extends Component {
     constructor (props) {
         super();
 
-        this.getMovies = this._getMovies.bind(this);
         this.state = {
             movies: [],
-            genres: {},
-            filter: props.filter
+            genres: {}
         };
+
+        this.handleClick = this._handleClick.bind(this);
     }
 
-    componentWillReceiveProps (props) {
-        this.setState(() => ({
-            filter: props.filter
-        }));
-
-        this.getMovies();
-    }
-
-    _getMovies () {
-        const { baseUrl, apiKey, language } = this.context;
-
-        fetch(`${baseUrl}/movie/${this.state.filter}?api_key=${apiKey}&language=${language}&page=1&region=UA`,
-            {
-                method:  'GET',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                }
-            }).then((results) => {
-            if (results.status !== 200) {
-                throw new Error('Films were not received.');
-            }
-
-            return results.json();
-        }).then(({ results }) => {
-            this.setState(({ popMovies }) => ({
-                movies: results
-            }));
-        });
-    }
+    //componentWillReceiveProps (props) {
+    //this.getMovies(props.filter);
+    //}
 
     _handleClick (event, movie) {
         this.props.showDetailsPopUp(movie);
     }
 
     render () {
-        const { genres, switchFilter } = this.props;
-        const { filter } = this.state;
+        const { genres, switchFilter, filter, getMovies } = this.props;
 
-        let movies = this.state.movies.map((movie, index) =>
-            (<section onClick = { (event) => this._handleClick(event, movie) }>
+        const movies = this.state.movies.map((movie, index) =>
+            (<section onClick = { () => this.handleClick(movie) }>
                 <Movie
                     posterPath = { `https://image.tmdb.org/t/p/w160/${movie.poster_path}` }
                     movie = { movie }
