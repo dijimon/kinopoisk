@@ -4,7 +4,10 @@ body {
 }
 
 .home {
-  background-color: #dddddd;
+  background:transparent url("../../theme/assets/mainBG4.jpg") no-repeat;
+  background-size: 100vw;
+  background-attachment: fixed;
+  //background-color: #dddddd;
 }
 
 h1 {

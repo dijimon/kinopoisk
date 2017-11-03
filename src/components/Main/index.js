@@ -12,7 +12,7 @@ export default class Main extends Component {
         language: PropTypes.string.isRequired
     }
 
-    constructor (props) {
+    constructor () {
         super();
 
         this.state = {
@@ -20,28 +20,32 @@ export default class Main extends Component {
             genres: {}
         };
 
-        this.handleClick = this._handleClick.bind(this);
+        this.handleMovieClick = this._handleMovieClick.bind(this);
     }
 
-    //componentWillReceiveProps (props) {
-    //this.getMovies(props.filter);
-    //}
-
-    _handleClick (event, movie) {
+    _handleMovieClick (movie) {
         this.props.showDetailsPopUp(movie);
     }
 
     render () {
-        const { genres, switchFilter, filter, getMovies } = this.props;
+        const { genres, switchFilter, filter, movies, addToWishlist, addToFavoritelist, wishList, favoriteList } = this.props;
 
-        const movies = this.state.movies.map((movie, index) =>
-            (<section onClick = { () => this.handleClick(movie) }>
+        const moviesList = movies.map((movie, index) =>
+            (<section key = { index }>
                 <Movie
                     posterPath = { `https://image.tmdb.org/t/p/w160/${movie.poster_path}` }
                     movie = { movie }
+                    movieId = { index + 1 }
+                    wishList = { wishList }
+                    favoriteList = { favoriteList }
                     genres = { genres }
+                    addToWishlist = { addToWishlist }
+                    addToFavoritelist = { addToFavoritelist }
+                    handleMovieClick = { this.handleMovieClick }
                 />
-            </section>)
+            </section>
+
+            )
         );
 
 
@@ -49,7 +53,7 @@ export default class Main extends Component {
             <section className = { Styles.extCont }>
                 <MainTabs filter = { filter } switchFilter = { switchFilter } />
                 <section className = { Styles.mainList }>
-                    { movies }
+                    { moviesList }
                 </section>
             </section>
 

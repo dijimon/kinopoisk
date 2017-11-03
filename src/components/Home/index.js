@@ -25,9 +25,16 @@ export default class Home extends Component {
 
         this.state = {
             genres:           {},
-            filter:           'popular',
+            filter:           'now_playing',
             movie:            {},
-            showDetailsPopUp: false
+            movies:           [],
+            showDetailsPopUp: false,
+            wishList:         window.localStorage.wishList ? window.localStorage.wishList.split(',') : [],
+            wishMovies:       window.localStorage.wishMovies ? JSON.parse(window.localStorage.wishMovies) : [],
+            showWishList:     true,
+            favoriteList:     window.localStorage.favoriteList ? window.localStorage.favoriteList.split(',') : [],
+            favoriteMovies:   window.localStorage.favoriteMovies ? JSON.parse(window.localStorage.favoriteMovies) : [],
+            showFavoriteList: true
         };
 
         this.getGenreList = this._getGenreList.bind(this);
@@ -35,15 +42,22 @@ export default class Home extends Component {
         this.showDetailsPopUp = this._showDetailsPopUp.bind(this);
         this.hideDetailsPopUp = this._hideDetailsPopUp.bind(this);
         this.getMovies = this._getMovies.bind(this);
+        this.getMoviesBySearch = this._getMoviesBySearch.bind(this);
+        this.addToWishlist = this._addToWishlist.bind(this);
+        this.addToFavoritelist = this._addToFavoritelist.bind(this);
+        this.removeFromWishlist = this._removeFromWishlist.bind(this);
+        this.removeFromFavoritelist = this._removeFromFavoritelist.bind(this);
+        this.toggleWishList = this._toggleWishList.bind(this);
+        this.toggleFavoriteList = this._toggleFavoriteList.bind(this);
+    }
+
+    getChildContext () {
+        return config;
     }
 
     componentWillMount () {
         this.getGenreList();
         this.getMovies(this.state.filter);
-    }
-
-    getChildContext () {
-        return config;
     }
 
     _getGenreList () {
@@ -80,22 +94,23 @@ export default class Home extends Component {
     }
 
     _showDetailsPopUp (movie) {
-        this.setState((prevState) => ({
+        this.setState(() => ({
             movie,
             showDetailsPopUp: true
         }));
     }
 
     _hideDetailsPopUp () {
-        this.setState((prevState) => ({
+        this.setState(() => ({
             showDetailsPopUp: false
         }));
     }
 
     _getMovies (filter) {
-        const { baseUrl, apiKey, language } = this.context;
+        const { baseUrl, apiKey, language } = config;
+        const url = `${baseUrl}/movie/${filter}?api_key=${apiKey}&language=${language}&page=1&region=UA`;
 
-        fetch(`${baseUrl}/movie/${filter}?api_key=${apiKey}&language=${language}&page=1&region=UA`,
+        fetch(url,
             {
                 method:  'GET',
                 headers: {
@@ -111,21 +126,158 @@ export default class Home extends Component {
             this.setState(() => ({
                 movies: results
             }));
-
-            this.forceUpdate();
         });
     }
 
-    render () {
-        const { genres, filter, showDetailsPopUp, movie } = this.state;
+    _getMoviesBySearch (request) {
+        const { baseUrl, apiKey, language } = config;
+        const url = `${baseUrl}/search/movie?api_key=${apiKey}&language=${language}&page=1&query=${request}`;
 
+        fetch(url,
+            {
+                method:  'GET',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                }
+            }).then((results) => {
+            if (results.status !== 200) {
+                throw new Error('Films were not received.');
+            }
+
+            return results.json();
+        }).then(({ results }) => {
+            this.setState(() => ({
+                movies: results
+            }));
+        });
+    }
+
+    _addToWishlist (event, id, movie) {
+
+        if (event.target.checked) {
+            this.setState((prevState) => ({
+                wishList:   [...new Set([id, ...prevState.wishList])],
+                wishMovies: [...new Set([movie, ...prevState.wishMovies])]
+            }));
+
+        } else {
+            this.setState((prevState) => ({
+                wishList:   prevState.wishList.filter((e) => e != id),
+                wishMovies: prevState.wishMovies.filter((e) => e.id !== id)
+            }));
+        }
+    }
+
+    _addToFavoritelist (event, id, movie) {
+        if (event.target.className === '') {
+            this.setState((prevState) => ({
+                favoriteList:   [...new Set([id, ...prevState.favoriteList])],
+                favoriteMovies: [...new Set([movie, ...prevState.favoriteMovies])]
+            }));
+
+        } else {
+            this.setState((prevState) => ({
+                favoriteList:   prevState.favoriteList.filter((e) => e != id),
+                favoriteMovies: prevState.favoriteMovies.filter((e) => e.id !== id)
+            }));
+        }
+    }
+
+    _removeFromWishlist (id) {
+        this.setState((prevState) => ({
+            wishList:   prevState.wishList.filter((e) => e != id),
+            wishMovies: prevState.wishMovies.filter((e) => e.id !== id)
+        }));
+    }
+
+    _removeFromFavoritelist (id) {
+        this.setState((prevState) => ({
+            favoriteList:   prevState.favoriteList.filter((e) => e != id),
+            favoriteMovies: prevState.favoriteMovies.filter((e) => e.id !== id)
+        }));
+    }
+
+    _toggleWishList () {
+        if (this.state.showFavoriteList === false) {
+            this.toggleFavoriteList();
+        }
+        this.setState((prevState) => ({
+            showWishList: !prevState.showWishList
+        }));
+    }
+
+    _toggleFavoriteList () {
+        if (this.state.showWishList === false) {
+            this.toggleWishList();
+        }
+        this.setState((prevState) => ({
+            showFavoriteList: !prevState.showFavoriteList
+        }));
+    }
+
+    render () {
+        const {
+            genres,
+            filter,
+            showDetailsPopUp,
+            movie,
+            movies,
+            wishList,
+            favoriteList,
+            wishMovies,
+            favoriteMovies,
+            showWishList,
+            showFavoriteList
+        } = this.state;
+
+        window.localStorage.setItem('wishList', wishList.join(','));
+        window.localStorage.setItem('wishMovies', JSON.stringify(wishMovies));
+        window.localStorage.setItem('favoriteList', favoriteList.join(','));
+        window.localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovies));
 
         return (
             <section className = { Styles.home }>
-                <DetailsPopUp genres = { genres } hidePopUp = { this.hideDetailsPopUp } show = { showDetailsPopUp } movie = { movie } />
-                <Header />
-                <Main getMovies = { this.getMovies } switchFilter = { this.switchFilter } filter = { filter } genres = { genres } showDetailsPopUp = { this.showDetailsPopUp } />
-                <Footer />
+                <Header
+                    showWishList = { showWishList }
+                    showFavoriteList = { showFavoriteList }
+                    wishMovies = { wishMovies }
+                    favoriteMovies = { favoriteMovies }
+                    toggleWishList = { this.toggleWishList }
+                    toggleFavoriteList = { this.toggleFavoriteList }
+                    getMoviesBySearch = { this.getMoviesBySearch }
+                />
+                <Main
+                    wishList = { wishList }
+                    favoriteList = { favoriteList }
+                    addToWishlist = { this.addToWishlist }
+                    addToFavoritelist = { this.addToFavoritelist }
+                    filter = { filter }
+                    genres = { genres }
+                    getMovies = { this.getMovies }
+                    movies = { movies }
+                    switchFilter = { this.switchFilter }
+                    showDetailsPopUp = { this.showDetailsPopUp }
+                />
+                <Footer
+                    toggleWishList = { this.toggleWishList }
+                    toggleFavoriteList = { this.toggleFavoriteList }
+                    showWishList = { showWishList }
+                    showFavoriteList = { showFavoriteList }
+                    genres = { genres }
+                    wishList = { wishList }
+                    wishMovies = { wishMovies }
+                    favoriteList = { favoriteList }
+                    favoriteMovies = { favoriteMovies }
+                    handleMovieClick = { this.showDetailsPopUp }
+                    removeFromWishlist = { this.removeFromWishlist }
+                    removeFromFavoritelist = { this.removeFromFavoritelist }
+                />
+                <DetailsPopUp
+                    genres = { genres }
+                    hidePopUp = { this.hideDetailsPopUp }
+                    show = { showDetailsPopUp }
+                    movie = { movie }
+                />
             </section>
         );
     }

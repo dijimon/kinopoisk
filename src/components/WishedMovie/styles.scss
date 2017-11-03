@@ -1,0 +1,64 @@
+.movieItem {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  padding: 0;
+  min-height: 250px;
+  width: 130px;
+  //box-shadow: 2px 2px 2px #ccc;
+  box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
+  background-color: #fff;
+  border-radius: 3px;
+  color: #555;
+  overflow: hidden;
+}
+
+.imgCont {
+  position: relative;
+  max-height: 195px;
+  min-width: 130px;
+  overflow: hidden;
+}
+
+.close {
+  z-index: 200;
+  font-size:30px;
+  display: block;
+  text-align: right;
+  padding-right: 8px;
+  color: #555;
+}
+
+.close:hover {
+  cursor: pointer;
+}
+
+.index {
+  margin-right: 10px;
+}
+
+.movieItem:hover {
+  box-shadow: 2px 4px 6px rgba(0,0,0,.36), 2px 4px 6px rgba(0,0,0,.43);
+}
+
+.transparentEl {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  background-color: rgba(0,0,0,0);
+  width: 130px;
+  height: 195px;
+}
+
+.movieItem .imgCont .transparentEl:hover {
+  background-color: rgba(255,255,255,0.4);
+}
+
+.title {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin: 8px;
+  word-wrap: break-word;
+}

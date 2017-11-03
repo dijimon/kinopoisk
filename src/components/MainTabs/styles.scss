@@ -3,18 +3,23 @@
   flex-direction: row;
   align-items: flex-start;
   width: 80vw;
-  margin-top: 50px;
+  margin-top: 60px;
 }
 
 .container a {
   text-align: center;
   min-width: 80px;
   padding: 10px;
-  margin-right: 2px;
-  background-color: #fefefe;
+  margin-right: 3px;
+  background-color: #dddddd;
   color: #555555;
+  text-decoration: none;
 }
 
-a.active {
-  background-color: #eeeeee;
+.container a:hover {
+  background-color: #cccccc;
+}
+
+a.active, a.active:hover {
+  background-color: #fefefe;
 }
