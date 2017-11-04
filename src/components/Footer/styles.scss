@@ -1,14 +1,14 @@
 .footer {
   display: flex;
-  min-width: 100%;
+  min-width: 100vw;
   width: auto;
-  overflow: scroll;
   height: 300px;
   position: fixed;
   bottom: -300px;
   left: 0;
   background-color: #eeeeee;
   padding: 10px;
+  z-index: 100;
 }
 
 .footer .textForEmpty {

@@ -28,7 +28,8 @@ export default class Main extends Component {
     }
 
     render () {
-        const { genres, switchFilter, filter, movies, addToWishlist, addToFavoritelist, wishList, favoriteList } = this.props;
+        const { genres, switchFilter, filter, movies, addToWishlist,
+                addToFavoritelist, wishList, favoriteList } = this.props;
 
         const moviesList = movies.map((movie, index) =>
             (<section key = { index }>

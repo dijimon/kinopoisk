@@ -58,6 +58,7 @@ export default class Header extends Component {
                         size = '45'
                         type = 'text'
                         onChange = { this.handleInputChange }
+                        value = { this.state.textAreaValue }
                     />
                     <input
                         type = 'submit'
