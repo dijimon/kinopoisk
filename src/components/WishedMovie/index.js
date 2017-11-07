@@ -2,15 +2,8 @@ import React, { Component } from 'react';
 import Styles from './styles.scss';
 
 export default class WishedMovie extends Component {
-    constructor () {
-        super();
-
-    }
-
     render () {
-        const { movie, handleMovieClick, genres, index, removeFromWishlist, remove } = this.props;
-        const genreNamesArr = movie.genre_ids.map((g) => genres[g]);
-        const genreNames = genreNamesArr.join(', ');
+        const { movie, handleMovieClick, remove } = this.props;
 
         return (
             <section className = { Styles.movieItem }>

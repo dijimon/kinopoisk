@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import Styles from './styles.scss';
 
+// Wait for pause 1sec after character input in search input
+let waiter = null;
+
 export default class Header extends Component {
     constructor () {
         super();
 
         this.state = {
-            textAreaValue: ''
+
         };
 
         this.handleSubmit = this._handleSubmit.bind(this);
@@ -34,12 +37,20 @@ export default class Header extends Component {
         this.setState(() => ({
             textAreaValue
         }));
+
+        clearTimeout(waiter);
+
+        waiter = setTimeout(() => {
+            if (this.state.textAreaValue) {
+                this.props.getMoviesBySearch(this.state.textAreaValue);
+            }
+        }, 2000);
     }
 
     render () {
         const { wishMovies, favoriteMovies, toggleWishList, toggleFavoriteList, showWishList, showFavoriteList }   = this.props;
-        let wishListCounter;
-        let favoriteListCounter;
+        let wishListCounter = '';
+        let favoriteListCounter = '';
 
         if (wishMovies.length > 0) {
             wishListCounter = <span className = { Styles.greenCounter }>{ wishMovies.length }</span>;
@@ -50,20 +61,22 @@ export default class Header extends Component {
 
         return (
             <section className = { Styles.header }>
-                <a className = { showWishList === false ? Styles.active : '' } onClick = { toggleWishList } href = '#'>Смотреть позже { wishListCounter }</a>
-                <a className = { showFavoriteList === false ? Styles.active : '' } onClick = { toggleFavoriteList } href = '#'>Любимые { favoriteListCounter }</a>
+                <section>
+                    <a className = { showWishList === false ? Styles.active : '' } href = '#' onClick = { toggleWishList }>Смотреть позже { wishListCounter }</a>
+                    <a className = { showFavoriteList === false ? Styles.active : '' } href = '#' onClick = { toggleFavoriteList }>Любимые { favoriteListCounter }</a>
+                </section>
+                <section className = { Styles.logo } />
                 <form onSubmit = { this.handleSubmit }>
                     <input
-                        placeholder = 'Search for movies...'
+                        placeholder = 'Быстрый поиск...'
                         size = '45'
                         type = 'text'
-                        onChange = { this.handleInputChange }
                         value = { this.state.textAreaValue }
+                        onChange = { this.handleInputChange }
                     />
                     <input
                         type = 'submit'
                     />
-                    <span className = { Styles.search } />
                 </form>
             </section>
         );

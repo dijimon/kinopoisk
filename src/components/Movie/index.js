@@ -33,7 +33,7 @@ export default class Movie extends Component {
             <section className = { Styles.movieItem }>
                 { movieHeader }
                 <div className = { Styles.imgCont } onClick = { () => handleMovieClick(movie) }>
-                    <img src = { posterPath } />
+                    <img className = { Styles.emptyPoster } src = { posterPath } />
                     <div className = { Styles.transparentEl } />
                 </div>
                 <section onClick = { () => handleMovieClick(movie) }>

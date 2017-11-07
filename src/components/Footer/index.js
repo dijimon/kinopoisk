@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CSSTransition, Transition, TransitionGroup } from 'react-transition-group';
+import { Transition } from 'react-transition-group';
 import Styles from './styles.scss';
 import WishedMovie from '../WishedMovie/';
 import { fromTo } from 'gsap';

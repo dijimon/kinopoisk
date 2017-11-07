@@ -27,7 +27,7 @@ export default class DetailsPopUp extends Component {
                 { show === true ?
                     <section className = { Styles.container } onClick = { this.hidePopUp } >
                         <section className = { Styles.popUp }>
-                            <img src = { `https://image.tmdb.org/t/p/w300/${movie.poster_path}` } alt = 'movie' />
+                            <img className = { Styles.imgPoster } src = { `https://image.tmdb.org/t/p/w300/${movie.poster_path}` } alt = 'movie' />
                             <div className = { Styles.content }>
                                 <h2>{ movie.title }</h2>
                                 <span>Дата выпуска: { movie.release_date } </span>

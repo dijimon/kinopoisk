@@ -4,6 +4,7 @@ import Movie from '../Movie';
 import MainTabs from '../MainTabs';
 
 import { PropTypes } from 'prop-types';
+import Spinner from '../Spinner';
 
 export default class Main extends Component {
     static contextTypes = {
@@ -29,7 +30,7 @@ export default class Main extends Component {
 
     render () {
         const { genres, switchFilter, filter, movies, addToWishlist,
-                addToFavoritelist, wishList, favoriteList } = this.props;
+            addToFavoritelist, wishList, favoriteList, showSpinner } = this.props;
 
         const moviesList = movies.map((movie, index) =>
             (<section key = { index }>
@@ -49,12 +50,12 @@ export default class Main extends Component {
             )
         );
 
-
         return (
             <section className = { Styles.extCont }>
                 <MainTabs filter = { filter } switchFilter = { switchFilter } />
                 <section className = { Styles.mainList }>
                     { moviesList }
+                    { showSpinner && <Spinner/> }
                 </section>
             </section>
 

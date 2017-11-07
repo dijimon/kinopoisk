@@ -36,7 +36,8 @@ export default class Home extends Component {
             favoriteList:     window.localStorage.favoriteList ? window.localStorage.favoriteList.split(',') : [],
             favoriteMovies:   window.localStorage.favoriteMovies ? JSON.parse(window.localStorage.favoriteMovies) : [],
             showFavoriteList: true,
-            hasMore:          true
+            showSpinner:      false,
+            loadMore:         true
         };
 
         this.getGenreList = this._getGenreList.bind(this);
@@ -64,17 +65,21 @@ export default class Home extends Component {
     }
 
     componentDidMount () {
-        window.addEventListener('scroll', this.handleScrollDown)
+        window.addEventListener('scroll', this.handleScrollDown);
     }
 
-    _handleScrollDown (event) {
-        let scrollTop = window.pageYOffset;
-        if (scrollTop + window.innerHeight >= document.body.offsetHeight) {
-            this.setState(() => ({
-                page: this.state.page + 1
-            }));
-            console.log('this.state.page = ' + this.state.page);
-            this.getMovies(this.state.page);
+    async _handleScrollDown () {
+        const scrollTop = window.pageYOffset;
+
+        if (this.state.loadMore === true) {
+            if (scrollTop + window.innerHeight >= document.body.offsetHeight) {
+                await this.setState(() => ({
+                    page: this.state.page + 1
+                }));
+                if (this.state.filter) {
+                    this.getMovies(this.state.page);
+                }
+            }
         }
     }
 
@@ -106,7 +111,8 @@ export default class Home extends Component {
 
     async _switchFilter (category) {
         await this.setState({
-            filter: category
+            filter:   category,
+            loadMore: true
         });
         this.getMovies(1);
     }
@@ -128,36 +134,62 @@ export default class Home extends Component {
         const { baseUrl, apiKey, language } = config;
         const url = `${baseUrl}/movie/${this.state.filter}?api_key=${apiKey}&language=${language}&page=${page}&region=UA`;
 
-        fetch(url,
-            {
-                method:  'GET',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                }
-            }).then((results) => {
-            if (results.status !== 200) {
-                throw new Error('Films were not received.');
-            }
+        if (this.state.loadMore === true) {
 
-            return results.json();
-        }).then(({ results }) => {
-            if (page > 1) {
-                this.setState((prevState) => ({
-                    movies: prevState.movies.concat(results)
-                }));
-            }
-            else {
+            this.setState(() => ({
+                showSpinner: true
+            }));
+
+            fetch(url,
+                {
+                    method:  'GET',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    }
+                }).then((results) => {
+                if (results.status !== 200) {
+                    this.setState(() => ({
+                        showSpinner: false,
+                        loadMore:    false
+                    }));
+                    throw new Error('Films were not received.');
+                }
+
+                return results.json();
+            }).then(({ results }) => {
+                if (results.length === 0) {
+                    this.setState(() => ({
+                        loadMore:    false,
+                        showSpinner: false
+                    }));
+                }
+
+                if (page > 1) {
+                    this.setState((prevState) => ({
+                        movies: prevState.movies.concat(results)
+                    }));
+                } else {
+                    this.setState(() => ({
+                        movies: results
+                    }));
+                }
+            }).catch(() => {
                 this.setState(() => ({
-                    movies: results
+                    showSpinner: false,
+                    loadMore:    false
                 }));
-            }
-        });
+            });
+        }
     }
 
     _getMoviesBySearch (request) {
         const { baseUrl, apiKey, language } = config;
         const url = `${baseUrl}/search/movie?api_key=${apiKey}&language=${language}&page=1&query=${request}`;
 
+        this.setState(() => ({
+            showSpinner: true
+        }));
+
         fetch(url,
             {
                 method:  'GET',
@@ -166,14 +198,31 @@ export default class Home extends Component {
                 }
             }).then((results) => {
             if (results.status !== 200) {
+                this.setState(() => ({
+                    showSpinner: false,
+                    loadMore:    false
+                }));
                 throw new Error('Films were not received.');
             }
 
             return results.json();
         }).then(({ results }) => {
+            if (results.length === 0) {
+                this.setState(() => ({
+                    loadMore:    false,
+                    showSpinner: false
+                }));
+            }
+
             this.setState(() => ({
-                movies: results,
-                filter: ''
+                movies:      results,
+                filter:      '',
+                showSpinner: false
+            }));
+        }).catch(() => {
+            this.setState(() => ({
+                showSpinner: false,
+                loadMore:    false
             }));
         });
     }
@@ -188,7 +237,7 @@ export default class Home extends Component {
 
         } else {
             this.setState((prevState) => ({
-                wishList:   prevState.wishList.filter((e) => e != id),
+                wishList:   prevState.wishList.filter((e) => e !== id),
                 wishMovies: prevState.wishMovies.filter((e) => e.id !== id)
             }));
         }
@@ -203,7 +252,7 @@ export default class Home extends Component {
 
         } else {
             this.setState((prevState) => ({
-                favoriteList:   prevState.favoriteList.filter((e) => e != id),
+                favoriteList:   prevState.favoriteList.filter((e) => e !== id),
                 favoriteMovies: prevState.favoriteMovies.filter((e) => e.id !== id)
             }));
         }
@@ -211,14 +260,14 @@ export default class Home extends Component {
 
     _removeFromWishlist (id) {
         this.setState((prevState) => ({
-            wishList:   prevState.wishList.filter((e) => e != id),
+            wishList:   prevState.wishList.filter((e) => e !== id),
             wishMovies: prevState.wishMovies.filter((e) => e.id !== id)
         }));
     }
 
     _removeFromFavoritelist (id) {
         this.setState((prevState) => ({
-            favoriteList:   prevState.favoriteList.filter((e) => e != id),
+            favoriteList:   prevState.favoriteList.filter((e) => e !== id),
             favoriteMovies: prevState.favoriteMovies.filter((e) => e.id !== id)
         }));
     }
@@ -253,7 +302,8 @@ export default class Home extends Component {
             wishMovies,
             favoriteMovies,
             showWishList,
-            showFavoriteList
+            showFavoriteList,
+            showSpinner
         } = this.state;
 
         window.localStorage.setItem('wishList', wishList.join(','));
@@ -283,6 +333,7 @@ export default class Home extends Component {
                     movies = { movies }
                     switchFilter = { this.switchFilter }
                     showDetailsPopUp = { this.showDetailsPopUp }
+                    showSpinner = { showSpinner }
                 />
                 <Footer
                     toggleWishList = { this.toggleWishList }
