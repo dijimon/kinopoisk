@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 
 export default class DetailsPopUp extends Component {
     static propTypes = {
-        genres: PropTypes.array,
-        movie:  PropTypes.obj,
-        show:   PropTypes.bool
+        movie: PropTypes.object,
+        show:  PropTypes.bool
     }
 
     constructor () {

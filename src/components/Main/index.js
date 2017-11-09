@@ -18,7 +18,7 @@ export default class Main extends Component {
 
         this.state = {
             movies: [],
-            genres: {}
+            genres: []
         };
 
         this.handleMovieClick = this._handleMovieClick.bind(this);

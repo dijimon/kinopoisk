@@ -24,7 +24,7 @@ export default class Home extends Component {
         super();
 
         this.state = {
-            genres:           {},
+            genres:           [],
             filter:           'now_playing',
             movie:            {},
             movies:           [],
