@@ -37,7 +37,8 @@ export default class Home extends Component {
             favoriteMovies:   window.localStorage.favoriteMovies ? JSON.parse(window.localStorage.favoriteMovies) : [],
             showFavoriteList: true,
             showSpinner:      false,
-            loadMore:         true
+            loadMore:         true,
+            suggestions:      []
         };
 
         this.getGenreList = this._getGenreList.bind(this);
@@ -112,7 +113,8 @@ export default class Home extends Component {
     async _switchFilter (category) {
         await this.setState({
             filter:   category,
-            loadMore: true
+            loadMore: true,
+            movies:   []
         });
         this.getMovies(1);
     }
@@ -182,7 +184,7 @@ export default class Home extends Component {
         }
     }
 
-    _getMoviesBySearch (request) {
+    _getMoviesBySearch (request, forSuggestions) {
         const { baseUrl, apiKey, language } = config;
         const url = `${baseUrl}/search/movie?api_key=${apiKey}&language=${language}&page=1&query=${request}`;
 
@@ -214,11 +216,20 @@ export default class Home extends Component {
                 }));
             }
 
-            this.setState(() => ({
-                movies:      results,
-                filter:      '',
-                showSpinner: false
-            }));
+            if (forSuggestions) {
+                this.setState(() => ({
+                    suggestions: results,
+                    filter:      '',
+                    showSpinner: false
+                }));
+            } else {
+                this.setState(() => ({
+                    movies:      results,
+                    filter:      '',
+                    showSpinner: false
+                }));
+            }
+
         }).catch(() => {
             this.setState(() => ({
                 showSpinner: false,
@@ -312,7 +323,7 @@ export default class Home extends Component {
         window.localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovies));
 
         return (
-            <section className = { Styles.home }>
+            <section className = { Styles.home } onClick = { this.hideSuggestions }>
                 <Header
                     showWishList = { showWishList }
                     showFavoriteList = { showFavoriteList }
@@ -321,6 +332,7 @@ export default class Home extends Component {
                     toggleWishList = { this.toggleWishList }
                     toggleFavoriteList = { this.toggleFavoriteList }
                     getMoviesBySearch = { this.getMoviesBySearch }
+                    suggestions = { this.state.suggestions }
                 />
                 <Main
                     wishList = { wishList }

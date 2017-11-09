@@ -55,7 +55,7 @@ export default class Main extends Component {
                 <MainTabs filter = { filter } switchFilter = { switchFilter } />
                 <section className = { Styles.mainList }>
                     { moviesList }
-                    { showSpinner && <Spinner/> }
+                    { showSpinner && <Spinner /> }
                 </section>
             </section>
 

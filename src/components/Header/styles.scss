@@ -77,6 +77,39 @@ form {
   font-size: 12px;
 }
 
+.suggestions {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  min-height: 30px;
+  max-height: 240px;
+  overflow: scroll;
+  width: 100%;
+  background-color: #fefefe;
+  box-shadow: 7px 7px 7px rgba(0,0,0,0.4);
+  border-radius: 4px;
+}
+
+.suggestions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestions ul li {
+  background-color: #eeeeee;
+  border-bottom: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  font-size: 14px;
+  color: #555555;
+}
+
+.suggestions ul li:hover {
+  background-color: #dddddd;
+  cursor: pointer;
+}
+
 input[type = 'text'] {
   color: #333;
   background: #dee0e1;
@@ -103,17 +136,6 @@ input[type = 'submit'] {
   right: 6px;
   width: 31px;
   height: 28px;
-  cursor: pointer;
-}
-
-.search {
-  position: absolute;
-  z-index: 1;
-  width: 31px;
-  height: 28px;
-  top: 5px;
-  right: 9px;
-  background-image: url('../../theme/assets/search.png');
   cursor: pointer;
 }
 

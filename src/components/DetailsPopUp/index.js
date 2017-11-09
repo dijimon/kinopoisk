@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import Styles from './styles.scss';
+import PropTypes from 'prop-types';
 
 export default class DetailsPopUp extends Component {
+    static propTypes = {
+        genres: PropTypes.array,
+        movie:  PropTypes.obj,
+        show:   PropTypes.bool
+    }
+
     constructor () {
         super();
 
@@ -15,6 +22,7 @@ export default class DetailsPopUp extends Component {
     render () {
         const { show, movie, genres } = this.props;
         let genreNames = '';
+
 
         if (show) {
             const genreNamesArr = movie.genre_ids.map((g) => genres[g]);

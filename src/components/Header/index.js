@@ -9,11 +9,12 @@ export default class Header extends Component {
         super();
 
         this.state = {
-
+            showSuggestions: false
         };
 
         this.handleSubmit = this._handleSubmit.bind(this);
         this.handleInputChange = this._handleInputChange.bind(this);
+        this.handleSuggestionClick = this._handleSuggestionClick.bind(this);
     }
 
     componentWillReceiveProps () {
@@ -42,15 +43,30 @@ export default class Header extends Component {
 
         waiter = setTimeout(() => {
             if (this.state.textAreaValue) {
-                this.props.getMoviesBySearch(this.state.textAreaValue);
+                this.props.getMoviesBySearch(this.state.textAreaValue, true);
+                this.setState(() => ({
+                    showSuggestions: true
+                }));
             }
-        }, 2000);
+        }, 1000);
+    }
+
+    _handleSuggestionClick (title) {
+        if (title) {
+            this.props.getMoviesBySearch(title, false);
+            this.setState(() => ({
+                showSuggestions: false
+            }));
+        }
     }
 
     render () {
-        const { wishMovies, favoriteMovies, toggleWishList, toggleFavoriteList, showWishList, showFavoriteList }   = this.props;
+        const { wishMovies, favoriteMovies, toggleWishList, toggleFavoriteList, showWishList, showFavoriteList, suggestions }   = this.props;
+        const { showSuggestions } = this.state;
         let wishListCounter = '';
         let favoriteListCounter = '';
+
+        const suggestionList = suggestions.map((movie, index) => (<li key = { index } onClick = { () => this.handleSuggestionClick(movie.title) }><span>{movie.title}</span></li>));
 
         if (wishMovies.length > 0) {
             wishListCounter = <span className = { Styles.greenCounter }>{ wishMovies.length }</span>;
@@ -77,6 +93,13 @@ export default class Header extends Component {
                     <input
                         type = 'submit'
                     />
+                    {
+                        showSuggestions && suggestionList.length > 0 ? <section className = { Styles.suggestions }>
+                            <ul>
+                                { suggestionList.length > 0 ? suggestionList : <li>Нет результатов</li> }
+                            </ul>
+                        </section> : ''
+                    }
                 </form>
             </section>
         );
